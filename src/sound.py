@@ -7,7 +7,7 @@ import random
 import time
 
 class Sound:
-    def __init__(self):
+    def __init__(self, test):
         self.success_files = []
         self.failure_files = []
         self.success_dir = '/home/pi/vcs/rpi_ci/sounds/success/'
@@ -15,6 +15,7 @@ class Sound:
         self.pygame = pygame
         self.load_files()
         self.clock = pygame.time.Clock()
+        self.test = test
 
     def load_files(self):
         self.load_files_in_dir(self.success_dir, self.success_files)
@@ -26,27 +27,28 @@ class Sound:
             break
 
     def play_failure(self):
-        #self.play_rand_file(self.failure_files)
         file = self.select_rand_file(self.failure_files)
         fpath = self.failure_dir + file
         freq = self.get_freq(fpath)
         self.pygame.mixer.init(frequency=freq)
-        #self.pygame.mixer.music.load(file)
-        #self.pygame.mixer.music.play()
         sound = self.pygame.mixer.Sound(fpath)
         sound.play()
-        time.sleep(sound.get_length()+1)
+        if self.test:
+            print("file chosen = {}".format(fpath))
+            time.sleep(sound.get_length()+1)
 
     def play_success(self):
         file = self.select_rand_file(self.success_files)
         fpath = self.success_dir + file
-        print("file chosen = {}".format(fpath))
         freq = self.get_freq(fpath)
         self.pygame.mixer.init(frequency=freq)
         sound = self.pygame.mixer.Sound(fpath)
         sound.play()
-        time.sleep(sound.get_length()+1)
+        if self.test:
+            print("file chosen = {}".format(fpath))
+            time.sleep(sound.get_length()+1)
 
+    '''
     def play_rand_file(self, audio_list):
         file = self.select_rand_file(audio_list)
         fpath = self.failure_dir + file
@@ -54,6 +56,7 @@ class Sound:
         self.pygame.mixer.init(frequency=freq)
         self.pygame.mixer.music.load(fpath)
         self.pygame.mixer.music.play()
+    '''
 
     def select_rand_file(self, audio_list):
         x = random.randint(0, len(audio_list)-1)
@@ -65,7 +68,7 @@ class Sound:
         return freq
 
 if __name__=='__main__':
-    s = Sound()
+    s = Sound(True)
     for i in range(4):
         s.play_success()
         s.play_failure()
