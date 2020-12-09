@@ -33,7 +33,7 @@ class GithubMonitor:
         self.last_conclusion = ''
         self.led_enable = True
         self.lights = Lights(self.led_enable)
-        self.sleep_time_sec = 60
+        self.sleep_time_sec = 20
 
     def run_loop(self):
         while(True):
