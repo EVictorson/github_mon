@@ -40,6 +40,9 @@ class UnicornLights:
     def blink_red(self, num_blinks):
         self.blink(self.red, 5)
 
+    def blink_green(self, num_blinks):
+        self.blink(self.green, 5)
+
     def blink(self, rgb_list, num_blinks):
         for i in range(num_blinks):
             self.blink_all(rgb_list)
@@ -105,12 +108,12 @@ class UnicornLights:
 if __name__=='__main__':
     ul = UnicornLights(True, 0.5)
     #ul.blink_red(5)
-    #red = [255, 0, 0 ]
-    #green = [0, 255, 0]
+    red = [255, 0, 0 ]
+    green = [0, 255, 0]
     #blue = [0, 0, 255]
     #blah = [125, 0, 125]
-    #ul.blink(red, 5)
-    #ul.blink(green, 5)
+    ul.blink(red, 5)
+    ul.blink(green, 5)
     #ul.blink(blue, 5)
     #ul.blink(blah, 5)
     ul.play_matrix_animation(True,100)

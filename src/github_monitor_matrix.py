@@ -75,8 +75,9 @@ class GithubMonitor:
                 print('Workflow Status = {}'.format(w.status))
                 print('Workflow Conclusion = {}'.format(w.conclusion))
 
-                if w.status == 'completed' and w.head_branch == self.branch_to_watch:
-                    self.conclusion_check(w)
+                #if w.status == 'completed': and w.head_branch == self.branch_to_watch:
+                if w.status == 'completed':
+		    self.conclusion_check(w)
                     self.last_run_number = w.run_number
                     self.last_conclusion = w.conclusion
 
@@ -84,26 +85,45 @@ class GithubMonitor:
         if workflow.conclusion == 'failure':
             self.sound.play_failure()
             if self.led_enable:
+                self.event.set()
+                self.animation_thread.join()
+                self.event.clear()
+                self.lights.blink_red(5)
+                self.animation_thread = threading.Thread(None, self.lights.play_matrix_animation, args=(self.event, False,))
+                self.animation_thread.start()
+
+            '''
                 if workflow.conclusion == self.curr_status:
                     pass
                 else:
                     self.event.set()
                     self.animation_thread.join()
                     self.event.clear()
+                    self.lights.blink_red(5)
                     self.animation_thread = threading.Thread(self.lights.play_matrix_animation, args=(self.event, False,))
                     self.animation_thread.start()
+            '''
             self.curr_status = workflow.conclusion
         if workflow.conclusion == 'success':
             self.sound.play_success()
             if self.led_enable:
+                self.event.set()
+                self.animation_thread.join()
+                self.event.clear()
+                self.lights.blink_green(5)
+                self.animation_thread = threading.Thread(None, target=self.lights.play_matrix_animation, args=(self.event, True,))
+                self.animation_thread.start()
+            '''
                 if workflow.conclusion == self.curr_status:
                     pass
                 else:
                     self.event.set()
                     self.animation_thread.join()
                     self.event.clear()
+                    self.lights.blink_green(5)
                     self.animation_thread = threading.Thread(target=self.lights.play_matrix_animation, args=(self.event, True,))
                     self.animation_thread.start()
+            '''
             self.curr_status = workflow.conclusion
 
 if __name__=='__main__':
